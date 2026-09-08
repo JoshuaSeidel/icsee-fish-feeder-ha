@@ -3,9 +3,10 @@
   "name": "iCSee Feeder",
   "codeowners": [],
   "config_flow": true,
+  "dependencies": ["ffmpeg", "stream"],
   "documentation": "https://github.com/JoshuaSeidel/icsee-fish-feeder-ha",
   "integration_type": "device",
   "iot_class": "local_polling",
   "issue_tracker": "https://github.com/JoshuaSeidel/icsee-fish-feeder-ha/issues",
-  "version": "0.1.1"
+  "version": "0.2.0"
 }

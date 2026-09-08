@@ -9,12 +9,18 @@
           "port": "Port",
           "username": "Username",
           "password": "Password",
-          "default_servings": "Default servings"
+          "default_servings": "Default servings",
+          "rtsp_port": "RTSP port",
+          "rtsp_channel": "Camera channel",
+          "rtsp_stream": "Camera stream"
         },
         "data_description": {
           "host": "IP address or DNS name of the feeder.",
           "port": "Local DVRIP/Sofia port. Leave as 34567 unless your feeder uses a custom port.",
-          "default_servings": "How many portions the Feed button dispenses by default."
+          "default_servings": "How many portions the Feed button dispenses by default.",
+          "rtsp_port": "Camera RTSP port. Most iCSee/XMEye devices use 554.",
+          "rtsp_channel": "Camera channel. Most single-camera feeders use 1.",
+          "rtsp_stream": "0 is the high-resolution main stream. 1 is the lower-resolution substream and is usually better for dashboards."
         }
       }
     },
@@ -33,7 +39,10 @@
       "init": {
         "title": "iCSee Feeder options",
         "data": {
-          "default_servings": "Default servings"
+          "default_servings": "Default servings",
+          "rtsp_port": "RTSP port",
+          "rtsp_channel": "Camera channel",
+          "rtsp_stream": "Camera stream"
         }
       }
     }
@@ -42,6 +51,11 @@
     "button": {
       "feed": {
         "name": "Feed"
+      }
+    },
+    "camera": {
+      "camera": {
+        "name": "Camera"
       }
     },
     "number": {
@@ -105,4 +119,3 @@
     }
   }
 }
-

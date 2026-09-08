@@ -23,6 +23,7 @@ sys.modules[SPEC.name] = api
 SPEC.loader.exec_module(api)
 
 _build_packet = api._build_packet
+build_rtsp_url = api.build_rtsp_url
 feed_record_datetime = api.feed_record_datetime
 latest_feed_record = api.latest_feed_record
 sofia_hash = api.sofia_hash
@@ -81,6 +82,32 @@ class TestIcseeFeederApi(unittest.TestCase):
         newer = {"Date": "2026-09-08", "Time": "07:00:00", "Servings": 2}
 
         self.assertEqual(latest_feed_record([older, newer]), newer)
+
+    def test_build_rtsp_url_uses_xmeye_stream_path(self) -> None:
+        """RTSP URLs should use the iCSee/XMEye path shape."""
+
+        self.assertEqual(
+            build_rtsp_url(
+                "192.168.8.199",
+                "admin",
+                "",
+                port=554,
+                channel=1,
+                stream=1,
+            ),
+            "rtsp://admin:@192.168.8.199:554/"
+            "user=admin_password=_channel=1_stream=1.sdp?real_stream",
+        )
+
+    def test_build_rtsp_url_escapes_credentials(self) -> None:
+        """RTSP URLs should escape userinfo and path credentials."""
+
+        self.assertEqual(
+            build_rtsp_url("feeder.local", "admin user", "p@ss word"),
+            "rtsp://admin%20user:p%40ss%20word@feeder.local:554/"
+            "user=admin%20user_password=p%40ss%20word_"
+            "channel=1_stream=1.sdp?real_stream",
+        )
 
 
 if __name__ == "__main__":

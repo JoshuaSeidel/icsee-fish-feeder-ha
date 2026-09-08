@@ -10,19 +10,26 @@ DOMAIN = "icsee_feeder"
 
 PLATFORMS: list[Platform] = [
     Platform.BUTTON,
+    Platform.CAMERA,
     Platform.NUMBER,
     Platform.SENSOR,
 ]
 
 DEFAULT_PORT = 34567
+DEFAULT_RTSP_PORT = 554
 DEFAULT_USERNAME = "admin"
 DEFAULT_SERVINGS = 1
+DEFAULT_RTSP_CHANNEL = 1
+DEFAULT_RTSP_STREAM = 1
 MIN_SERVINGS = 1
 MAX_SERVINGS = 20
 DEFAULT_TIMEOUT = 10.0
 UPDATE_INTERVAL = timedelta(minutes=5)
 
 CONF_DEFAULT_SERVINGS = "default_servings"
+CONF_RTSP_PORT = "rtsp_port"
+CONF_RTSP_CHANNEL = "rtsp_channel"
+CONF_RTSP_STREAM = "rtsp_stream"
 CONF_TIMEOUT = "timeout"
 
 ATTR_SERVINGS = "servings"

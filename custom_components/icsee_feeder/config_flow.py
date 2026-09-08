@@ -22,7 +22,13 @@ from .api import (
 )
 from .const import (
     CONF_DEFAULT_SERVINGS,
+    CONF_RTSP_CHANNEL,
+    CONF_RTSP_PORT,
+    CONF_RTSP_STREAM,
     DEFAULT_PORT,
+    DEFAULT_RTSP_CHANNEL,
+    DEFAULT_RTSP_PORT,
+    DEFAULT_RTSP_STREAM,
     DEFAULT_SERVINGS,
     DEFAULT_USERNAME,
     DOMAIN,
@@ -114,6 +120,9 @@ class IcseeFeederConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
                 data = dict(user_input)
                 default_servings = data.pop(CONF_DEFAULT_SERVINGS)
+                rtsp_port = data.pop(CONF_RTSP_PORT)
+                rtsp_channel = data.pop(CONF_RTSP_CHANNEL)
+                rtsp_stream = data.pop(CONF_RTSP_STREAM)
                 title = (
                     status.model
                     or status.serial
@@ -122,7 +131,12 @@ class IcseeFeederConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 return self.async_create_entry(
                     title=title,
                     data=data,
-                    options={CONF_DEFAULT_SERVINGS: default_servings},
+                    options={
+                        CONF_DEFAULT_SERVINGS: default_servings,
+                        CONF_RTSP_PORT: rtsp_port,
+                        CONF_RTSP_CHANNEL: rtsp_channel,
+                        CONF_RTSP_STREAM: rtsp_stream,
+                    },
                 )
 
         return self.async_show_form(
@@ -172,6 +186,18 @@ def _schema(user_input: dict[str, Any] | None = None) -> vol.Schema:
                 CONF_DEFAULT_SERVINGS,
                 default=suggested.get(CONF_DEFAULT_SERVINGS, DEFAULT_SERVINGS),
             ): vol.All(vol.Coerce(int), vol.Range(min=MIN_SERVINGS, max=MAX_SERVINGS)),
+            vol.Optional(
+                CONF_RTSP_PORT,
+                default=suggested.get(CONF_RTSP_PORT, DEFAULT_RTSP_PORT),
+            ): vol.All(vol.Coerce(int), vol.Range(min=1, max=65535)),
+            vol.Optional(
+                CONF_RTSP_CHANNEL,
+                default=suggested.get(CONF_RTSP_CHANNEL, DEFAULT_RTSP_CHANNEL),
+            ): vol.All(vol.Coerce(int), vol.Range(min=1, max=64)),
+            vol.Optional(
+                CONF_RTSP_STREAM,
+                default=suggested.get(CONF_RTSP_STREAM, DEFAULT_RTSP_STREAM),
+            ): vol.All(vol.Coerce(int), vol.Range(min=0, max=1)),
         }
     )
 
@@ -183,6 +209,17 @@ def _options_schema(options: dict[str, Any]) -> vol.Schema:
                 CONF_DEFAULT_SERVINGS,
                 default=options.get(CONF_DEFAULT_SERVINGS, DEFAULT_SERVINGS),
             ): vol.All(vol.Coerce(int), vol.Range(min=MIN_SERVINGS, max=MAX_SERVINGS)),
+            vol.Optional(
+                CONF_RTSP_PORT,
+                default=options.get(CONF_RTSP_PORT, DEFAULT_RTSP_PORT),
+            ): vol.All(vol.Coerce(int), vol.Range(min=1, max=65535)),
+            vol.Optional(
+                CONF_RTSP_CHANNEL,
+                default=options.get(CONF_RTSP_CHANNEL, DEFAULT_RTSP_CHANNEL),
+            ): vol.All(vol.Coerce(int), vol.Range(min=1, max=64)),
+            vol.Optional(
+                CONF_RTSP_STREAM,
+                default=options.get(CONF_RTSP_STREAM, DEFAULT_RTSP_STREAM),
+            ): vol.All(vol.Coerce(int), vol.Range(min=0, max=1)),
         }
     )
-

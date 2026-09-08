@@ -12,6 +12,7 @@ import logging
 import socket
 import struct
 from typing import Any, Self, TypeVar
+from urllib.parse import quote
 
 _LOGGER = logging.getLogger(__name__)
 _T = TypeVar("_T")
@@ -135,6 +136,26 @@ def sofia_hash(password: str = "") -> str:
     return "".join(
         alphabet[(first + second) % len(alphabet)]
         for first, second in zip(digest[::2], digest[1::2], strict=True)
+    )
+
+
+def build_rtsp_url(
+    host: str,
+    username: str,
+    password: str,
+    *,
+    port: int = 554,
+    channel: int = 1,
+    stream: int = 1,
+) -> str:
+    """Build the RTSP URL used by iCSee/XMEye camera firmware."""
+
+    encoded_username = quote(username, safe="")
+    encoded_password = quote(password, safe="")
+    return (
+        f"rtsp://{encoded_username}:{encoded_password}@{host}:{port}/"
+        f"user={encoded_username}_password={encoded_password}_"
+        f"channel={channel}_stream={stream}.sdp?real_stream"
     )
 
 

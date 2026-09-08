@@ -6,6 +6,7 @@ This custom integration controls iCSee/XMEye fish and pet feeders over the local
 
 - UI setup flow for host, port, username, password, and default servings.
 - `button.feed` entity for a one-tap manual feeding.
+- `camera.camera` entity for the feeder's built-in RTSP camera stream.
 - `number.portions` entity that controls how many servings the button dispenses.
 - `icsee_feeder.feed` entity service for automations with an optional `servings` override.
 - Sensors for latest feed timestamp, latest feed servings, schedule count, and advertised feeder support.
@@ -29,6 +30,8 @@ Most devices use:
 - Port: `34567`
 - Username: `admin`
 - Password: the password used by iCSee, or blank if the device has no local password
+- RTSP port: `554`
+- Camera stream: `1` for the lower-resolution substream, or `0` for the high-resolution main stream
 
 ## Automation Example
 
@@ -63,3 +66,9 @@ python3 -B scripts/probe_icsee_feeder.py 192.168.8.199 --username admin --passwo
 ```
 
 For firmware that times out on feed history or schedule queries, setup and manual feeding still work; those sensors may remain empty.
+
+The camera stream uses this iCSee/XMEye RTSP pattern:
+
+```text
+rtsp://<username>:<password>@<host>:554/user=<username>_password=<password>_channel=1_stream=1.sdp?real_stream
+```

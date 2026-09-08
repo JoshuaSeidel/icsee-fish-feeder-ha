@@ -139,6 +139,12 @@ class IcseeFeederCoordinator(DataUpdateCoordinator[IcseeFeederStatus]):
         )
 
     @property
+    def entry(self) -> ConfigEntry:
+        """Return the config entry."""
+
+        return self._entry
+
+    @property
     def device_id(self) -> str:
         """Return a stable device identifier."""
 
