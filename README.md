@@ -56,3 +56,10 @@ logger:
     custom_components.icsee_feeder: debug
 ```
 
+If Home Assistant says it cannot connect, you can probe the feeder from this repository:
+
+```bash
+python3 -B scripts/probe_icsee_feeder.py 192.168.8.199 --username admin --password ''
+```
+
+For firmware that times out on feed history or schedule queries, setup and manual feeding still work; those sensors may remain empty.

@@ -178,11 +178,7 @@ def _build_packet(
     if isinstance(payload, bytes):
         body = payload
     else:
-        body = json.dumps(
-            payload,
-            ensure_ascii=False,
-            separators=(",", ":"),
-        ).encode("utf-8")
+        body = json.dumps(payload, ensure_ascii=False).encode("utf-8")
 
     body += b"\x0a\x00"
     return (
@@ -219,7 +215,7 @@ class IcseeFeederClient:
         self.password = password
         self.timeout = timeout
 
-    def get_status(self) -> IcseeFeederStatus:
+    def get_status(self, *, include_feed_details: bool = False) -> IcseeFeederStatus:
         """Fetch metadata, capabilities, schedule, and feed history."""
 
         def action(session: _DvripSession) -> IcseeFeederStatus:
@@ -235,18 +231,11 @@ class IcseeFeederClient:
             except IcseeFeederProtocolError:
                 _LOGGER.debug("SystemFunction is not available from %s", self.host)
                 capabilities = {}
-            try:
-                feed_history = _feed_history_from_response(
-                    session.get_command("OPFeedHistory")
-                )
-            except IcseeFeederProtocolError:
-                _LOGGER.debug("Feed history is not available from %s", self.host)
-                feed_history = []
-            try:
-                feed_book = _feed_book_from_response(session.get_command("OPFeedBook"))
-            except IcseeFeederProtocolError:
-                _LOGGER.debug("Feed schedule is not available from %s", self.host)
-                feed_book = []
+            feed_history: list[dict[str, Any]] = []
+            feed_book: list[dict[str, Any]] = []
+            if include_feed_details:
+                feed_history = self._get_feed_history()
+                feed_book = self._get_feed_book()
             return IcseeFeederStatus(
                 system_info=system_info,
                 capabilities=capabilities,
@@ -255,6 +244,34 @@ class IcseeFeederClient:
             )
 
         return self._with_session(action)
+
+    def _get_feed_history(self) -> list[dict[str, Any]]:
+        """Fetch feed history using a separate session.
+
+        Some iCSee feeder firmware accepts OPFeedHistory but never replies. Keeping
+        this out of the core status path lets setup and control keep working.
+        """
+
+        def action(session: _DvripSession) -> list[dict[str, Any]]:
+            return _feed_history_from_response(session.get_command("OPFeedHistory"))
+
+        try:
+            return self._with_session(action)
+        except (IcseeFeederConnectionError, IcseeFeederProtocolError):
+            _LOGGER.debug("Feed history is not available from %s", self.host)
+            return []
+
+    def _get_feed_book(self) -> list[dict[str, Any]]:
+        """Fetch feed schedule using a separate session."""
+
+        def action(session: _DvripSession) -> list[dict[str, Any]]:
+            return _feed_book_from_response(session.get_command("OPFeedBook"))
+
+        try:
+            return self._with_session(action)
+        except (IcseeFeederConnectionError, IcseeFeederProtocolError):
+            _LOGGER.debug("Feed schedule is not available from %s", self.host)
+            return []
 
     def test_connection(self) -> IcseeFeederStatus:
         """Connect and verify that the target is probably a feeder."""
@@ -510,7 +527,7 @@ class _DvripSession(AbstractContextManager["_DvripSession"]):
             raw_payload = self._recv_exact(payload_length)
         except OSError as err:
             raise IcseeFeederConnectionError(
-                f"Connection to {self.host}:{self.port} failed"
+                f"Connection to {self.host}:{self.port} failed: {err}"
             ) from err
 
         self.session_id = session_id
