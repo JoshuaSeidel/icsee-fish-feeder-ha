@@ -1,0 +1,55 @@
+feed:
+  target:
+    entity:
+      integration: icsee_feeder
+      domain: button
+  fields:
+    servings:
+      required: false
+      example: 1
+      selector:
+        number:
+          min: 1
+          max: 20
+          step: 1
+          mode: box
+add_scheduled_feed:
+  target:
+    entity:
+      integration: icsee_feeder
+      domain: button
+  fields:
+    time:
+      required: true
+      example: "09:00"
+      selector:
+        time:
+    servings:
+      required: true
+      example: 1
+      selector:
+        number:
+          min: 1
+          max: 20
+          step: 1
+          mode: box
+delete_scheduled_feed:
+  target:
+    entity:
+      integration: icsee_feeder
+      domain: button
+  fields:
+    time:
+      required: true
+      example: "09:00"
+      selector:
+        time:
+    servings:
+      required: false
+      example: 1
+      selector:
+        number:
+          min: 1
+          max: 20
+          step: 1
+          mode: box

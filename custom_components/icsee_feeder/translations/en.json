@@ -1,0 +1,108 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Set up iCSee Feeder",
+        "description": "Connect to the feeder on your local network. Most iCSee/XMEye feeders use TCP port 34567.",
+        "data": {
+          "host": "Host",
+          "port": "Port",
+          "username": "Username",
+          "password": "Password",
+          "default_servings": "Default servings"
+        },
+        "data_description": {
+          "host": "IP address or DNS name of the feeder.",
+          "port": "Local DVRIP/Sofia port. Leave as 34567 unless your feeder uses a custom port.",
+          "default_servings": "How many portions the Feed button dispenses by default."
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Could not connect to the feeder.",
+      "invalid_auth": "Invalid username or password.",
+      "not_feeder": "The device responded, but its firmware does not report feeder support.",
+      "unknown": "Unexpected error."
+    },
+    "abort": {
+      "already_configured": "This feeder is already configured."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "iCSee Feeder options",
+        "data": {
+          "default_servings": "Default servings"
+        }
+      }
+    }
+  },
+  "entity": {
+    "button": {
+      "feed": {
+        "name": "Feed"
+      }
+    },
+    "number": {
+      "default_servings": {
+        "name": "Portions"
+      }
+    },
+    "sensor": {
+      "last_feed": {
+        "name": "Last feed"
+      },
+      "last_feed_servings": {
+        "name": "Last feed servings"
+      },
+      "scheduled_feeds": {
+        "name": "Scheduled feeds"
+      },
+      "feeder_support": {
+        "name": "Feeder support"
+      }
+    }
+  },
+  "services": {
+    "feed": {
+      "name": "Feed",
+      "description": "Dispense food from an iCSee/XMEye feeder.",
+      "fields": {
+        "servings": {
+          "name": "Servings",
+          "description": "Number of portions to dispense. If omitted, the integration uses the Portions entity value."
+        }
+      }
+    },
+    "add_scheduled_feed": {
+      "name": "Add scheduled feed",
+      "description": "Add a scheduled feed entry to the feeder firmware.",
+      "fields": {
+        "time": {
+          "name": "Time",
+          "description": "Local time for the feeder to dispense food."
+        },
+        "servings": {
+          "name": "Servings",
+          "description": "Number of portions to dispense."
+        }
+      }
+    },
+    "delete_scheduled_feed": {
+      "name": "Delete scheduled feed",
+      "description": "Delete scheduled feed entries from the feeder firmware.",
+      "fields": {
+        "time": {
+          "name": "Time",
+          "description": "Local scheduled feed time to remove."
+        },
+        "servings": {
+          "name": "Servings",
+          "description": "Optional portion count used to narrow the schedule entries removed."
+        }
+      }
+    }
+  }
+}
+
